@@ -71,12 +71,17 @@ class FormularioTransferencia extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8),
             child: ElevatedButton(
               onPressed: () {
+
                 final int? numeroConta =
                     int.tryParse(_controllerNumeroConta.text);
                 final double? valor = double.tryParse(_controllerValor.text);
                 if (numeroConta != null && valor != null) {
                   final transferenciaCriada = Transferencia(valor, numeroConta);
-                  debugPrint('$transferenciaCriada');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('$transferenciaCriada'),
+                    ),
+                  );
                 }
               },
               child: Text('Confirmar'),
