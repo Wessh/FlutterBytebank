@@ -19,10 +19,9 @@ class BytebankApp extends StatelessWidget {
 }
 
 class ListaTransferencia extends StatelessWidget {
-  const ListaTransferencia({Key? key}) : super(key: key);
+  final List<Transferencia> _transferencia = []; //Cria uma lista vazia
 
-  /*
-   * StatelessWidget = Conteudo de forma estatica
+  /* StatelessWidget = Conteudo de forma estatica
    * StatefulWidget = Tem a capacidade de modificar itens de forma dinamica
    */
   @override
@@ -31,25 +30,21 @@ class ListaTransferencia extends StatelessWidget {
       appBar: AppBar(
         title: Text('Transferências'),
       ),
-      body: Column(
-        children: [
-          ItemTransferencia(
-            Transferencia(100.2, 514),
-          ),
-          ItemTransferencia(
-            Transferencia(1300.2, 5144),
-          ),
-          ItemTransferencia(
-            Transferencia(4020.63, 6748),
-          ),
-        ],
+      body: ListView.builder( //.builder permite q a lista seja dinamica
+        itemCount: _transferencia.length, // verifica quantos itens tem na lista
+        itemBuilder: (context, index) { //Recebe o contexto e o indice = posição do item dentro do contexto
+          final transferencia = _transferencia[index]; //
+          return ItemTransferencia(transferencia); // Retorna o widget ItemTransferencia com transferencia referente a aquele indice
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final Future future = Navigator.push(context, MaterialPageRoute(builder: (context) {
+          final Future future =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
             return FormularioTransferencia();
-          }));  //Usado para ir para outra página
-          future.then((transferenciaRecebida){
+          })); //Usado para ir para outra página
+          future.then((transferenciaRecebida) {
+            _transferencia.add(transferenciaRecebida); // Adiciona um objeto a lista _transferencia
             debugPrint('Chegou no future.');
             debugPrint('$transferenciaRecebida');
           });
@@ -124,10 +119,10 @@ class ItemTransferencia extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: ListTile(
-          leading: Icon(Icons.monetization_on),
-          title: Text(_transferencia.valor.toString()),
-          subtitle: Text(_transferencia.numeroConta.toString()),
-        ));
+      leading: Icon(Icons.monetization_on),
+      title: Text(_transferencia.valor.toString()),
+      subtitle: Text(_transferencia.numeroConta.toString()),
+    ));
   }
 }
 
