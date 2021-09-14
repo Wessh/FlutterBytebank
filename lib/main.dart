@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(BytebankApp());
 
@@ -31,63 +32,83 @@ class FormularioTransferencia extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controllerNumeroConta,
-              style: TextStyle(fontSize: 24),
-              decoration: InputDecoration(
-                icon: Icon(
-                  Icons.account_balance,
-                  color: Colors.blue,
-                ),
-                labelText: 'Número da conta',
-                hintText: '0000',
-                counter:
-                    Offstage(), //Oculta o contador de caracteres usado pelo maxLength
-              ),
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-            ),
+          Editor(
+            controller: _controllerNumeroConta,
+            label: 'Número da conta',
+            tip: '0000',
+            maxLength: 4,
+            icon: Icons.account_balance,
+            color: Colors.blue,
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              keyboardType: TextInputType.number,
-              controller: _controllerValor,
-              style: TextStyle(fontSize: 24),
-              decoration: InputDecoration(
-                icon: Icon(
-                  Icons.monetization_on,
-                  color: Colors.blue,
-                ),
-                labelText: 'Valor',
-                hintText: '0.00',
-                prefix: Text('R\$ '),
-              ),
-            ),
+          Editor(
+            controller: _controllerValor,
+            label: 'Valor',
+            tip: '0.00',
+            prefixInput: Text('R\$ '),
+            icon: Icons.monetization_on,
+            color: Colors.blue,
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: ElevatedButton(
-              onPressed: () {
-
-                final int? numeroConta =
-                    int.tryParse(_controllerNumeroConta.text);
-                final double? valor = double.tryParse(_controllerValor.text);
-                if (numeroConta != null && valor != null) {
-                  final transferenciaCriada = Transferencia(valor, numeroConta);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('$transferenciaCriada'),
-                    ),
-                  );
-                }
-              },
-              child: Text('Confirmar'),
-            ),
+          ElevatedButton(
+            onPressed: () => _criaTransferencia(context),
+            child: Text('Confirmar'),
           ),
         ],
+      ),
+    );
+  }
+
+  void _criaTransferencia(BuildContext context) {
+    final int? numeroConta = int.tryParse(_controllerNumeroConta.text);
+    final double? valor = double.tryParse(_controllerValor.text);
+    if (numeroConta != null && valor != null) {
+      final transferenciaCriada = Transferencia(valor, numeroConta);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$transferenciaCriada'),
+        ),
+      );
+    }
+  }
+}
+
+class Editor extends StatelessWidget {
+  final TextEditingController? controller;
+  final IconData? icon;
+  final Color? color;
+  final String? label;
+  final String? tip;
+  final Text? prefixInput;
+  final int? maxLength;
+
+  const Editor(
+      {Key? key,
+      this.controller,
+      this.icon,
+      this.color,
+      this.label,
+      this.tip,
+      this.maxLength,
+      this.prefixInput})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controller,
+        style: TextStyle(fontSize: 24),
+        decoration: InputDecoration(
+          icon: icon != null ? Icon(icon, color: color) : null,
+          // Verifica se o valor do icone é nulo, caso seja, não mostra icone.
+          labelText: label,
+          hintText: tip,
+          prefix: prefixInput,
+          counter:
+              Offstage(), //Oculta o contador de caracteres usado pelo maxLength
+        ),
+        keyboardType: TextInputType.number,
+        maxLength: maxLength,
       ),
     );
   }
@@ -147,6 +168,7 @@ class ItemTransferencia extends StatelessWidget {
 class Transferencia {
   late final double valor;
   late final int numeroConta;
+
   Transferencia(this.valor, this.numeroConta);
 
   @override
