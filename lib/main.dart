@@ -26,12 +26,55 @@ class FormularioTransferencia extends StatelessWidget {
       appBar: AppBar(
         title: Text('Criando Transferências'),
       ),
-      body: Text('Body!'),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              style: TextStyle(fontSize: 24),
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.account_balance,
+                  color: Colors.blue,
+                ),
+                labelText: 'Número da conta',
+                hintText: '0000',
+              ),
+              keyboardType: TextInputType.number,
+              maxLength: 4,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              style: TextStyle(fontSize: 24),
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.monetization_on,
+                  color: Colors.blue,
+                ),
+                labelText: 'Valor',
+                hintText: '0.00',
+              ),
+              keyboardType: TextInputType.number,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: ElevatedButton(
+              onPressed: () {},
+              child: Text('Confirmar'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class ListaTransferencia extends StatelessWidget {
+  const ListaTransferencia({Key? key}) : super(key: key);
+
   /*
    * StatelessWidget = Conteudo de forma estatica
    * StatefulWidget = Tem a capacidade de modificar itens de forma dinamica
@@ -67,7 +110,8 @@ class ListaTransferencia extends StatelessWidget {
 class ItemTransferencia extends StatelessWidget {
   final Transferencia _transferencia;
 
-  ItemTransferencia(this._transferencia);
+  // ignore: prefer_const_constructors_in_immutables
+  ItemTransferencia(this._transferencia, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
