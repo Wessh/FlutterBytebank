@@ -2,18 +2,34 @@
 
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(
+void main() => runApp(BytebankApp());
+
+class BytebankApp extends StatelessWidget {
+  const BytebankApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       home: Scaffold(
-        body: ListaTransferencia(),
-        appBar: AppBar(
-          title: Text('Transferências'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: Icon(Icons.add),
-        ),
+        body: FormularioTransferencia(),
       ),
-    ));
+    );
+  }
+}
+
+class FormularioTransferencia extends StatelessWidget {
+  const FormularioTransferencia({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Criando Transferências'),
+      ),
+      body: Text('Body!'),
+    );
+  }
+}
 
 class ListaTransferencia extends StatelessWidget {
   /*
@@ -22,19 +38,28 @@ class ListaTransferencia extends StatelessWidget {
    */
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // ignore: prefer_const_literals_to_create_immutables
-      children: [
-        ItemTransferencia(
-          Transferencia(100.2, 514),
-        ),
-        ItemTransferencia(
-          Transferencia(1300.2, 5144),
-        ),
-        ItemTransferencia(
-          Transferencia(4020.63, 6748),
-        ),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Transferências'),
+      ),
+      body: Column(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          ItemTransferencia(
+            Transferencia(100.2, 514),
+          ),
+          ItemTransferencia(
+            Transferencia(1300.2, 5144),
+          ),
+          ItemTransferencia(
+            Transferencia(4020.63, 6748),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
