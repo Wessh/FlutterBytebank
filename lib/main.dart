@@ -12,7 +12,49 @@ class BytebankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: FormularioTransferencia(),
+        body: ListaTransferencia(),
+      ),
+    );
+  }
+}
+
+class ListaTransferencia extends StatelessWidget {
+  const ListaTransferencia({Key? key}) : super(key: key);
+
+  /*
+   * StatelessWidget = Conteudo de forma estatica
+   * StatefulWidget = Tem a capacidade de modificar itens de forma dinamica
+   */
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Transferências'),
+      ),
+      body: Column(
+        children: [
+          ItemTransferencia(
+            Transferencia(100.2, 514),
+          ),
+          ItemTransferencia(
+            Transferencia(1300.2, 5144),
+          ),
+          ItemTransferencia(
+            Transferencia(4020.63, 6748),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final Future future = Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return FormularioTransferencia();
+          }));  //Usado para ir para outra página
+          future.then((transferenciaRecebida){
+            debugPrint('Chegou no future.');
+            debugPrint('$transferenciaRecebida');
+          });
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
@@ -62,12 +104,30 @@ class FormularioTransferencia extends StatelessWidget {
     final double? valor = double.tryParse(_controllerValor.text);
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
+      Navigator.pop(context, transferenciaCriada);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('$transferenciaCriada'),
         ),
       );
     }
+  }
+}
+
+class ItemTransferencia extends StatelessWidget {
+  final Transferencia _transferencia;
+
+  // ignore: prefer_const_constructors_in_immutables
+  ItemTransferencia(this._transferencia, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        child: ListTile(
+          leading: Icon(Icons.monetization_on),
+          title: Text(_transferencia.valor.toString()),
+          subtitle: Text(_transferencia.numeroConta.toString()),
+        ));
   }
 }
 
@@ -111,57 +171,6 @@ class Editor extends StatelessWidget {
         maxLength: maxLength,
       ),
     );
-  }
-}
-
-class ListaTransferencia extends StatelessWidget {
-  const ListaTransferencia({Key? key}) : super(key: key);
-
-  /*
-   * StatelessWidget = Conteudo de forma estatica
-   * StatefulWidget = Tem a capacidade de modificar itens de forma dinamica
-   */
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Transferências'),
-      ),
-      body: Column(
-        children: [
-          ItemTransferencia(
-            Transferencia(100.2, 514),
-          ),
-          ItemTransferencia(
-            Transferencia(1300.2, 5144),
-          ),
-          ItemTransferencia(
-            Transferencia(4020.63, 6748),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class ItemTransferencia extends StatelessWidget {
-  final Transferencia _transferencia;
-
-  // ignore: prefer_const_constructors_in_immutables
-  ItemTransferencia(this._transferencia, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        child: ListTile(
-      leading: Icon(Icons.monetization_on),
-      title: Text(_transferencia.valor.toString()),
-      subtitle: Text(_transferencia.numeroConta.toString()),
-    ));
   }
 }
 
