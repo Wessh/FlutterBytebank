@@ -21,7 +21,7 @@ class BytebankApp extends StatelessWidget {
    * StatefulWidget = Tem a capacidade de modificar itens de forma dinamica
    */
 class ListaTransferencia extends StatefulWidget {
-  final List<Transferencia> _transferencia = [];//Cria uma lista vazia
+  final List<Transferencia> _transferencia = []; //Cria uma lista vazia
 
   @override
   State<StatefulWidget> createState() {
@@ -29,30 +29,37 @@ class ListaTransferencia extends StatefulWidget {
   }
 }
 
-class ListaTransferenciaState extends State<ListaTransferencia>{
+class ListaTransferenciaState extends State<ListaTransferencia> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Transferências'),
       ),
-      body: ListView.builder( //.builder permite q a lista seja dinamica
-        itemCount: widget._transferencia.length, // verifica quantos itens tem na lista
-        itemBuilder: (context, index) { //Recebe o contexto e o indice = posição do item dentro do contexto
+      body: ListView.builder(
+        //.builder permite q a lista seja dinamica
+        itemCount: widget._transferencia.length,
+        // verifica quantos itens tem na lista
+        itemBuilder: (context, index) {
+          //Recebe o contexto e o indice = posição do item dentro do contexto
           final transferencia = widget._transferencia[index]; //
-          return ItemTransferencia(transferencia); // Retorna o widget ItemTransferencia com transferencia referente a aquele indice
+          return ItemTransferencia(
+              transferencia); // Retorna o widget ItemTransferencia com transferencia referente a aquele indice
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final Future<dynamic> future =
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
             return FormularioTransferencia();
           })); //Usado para ir para outra página
           future.then((transferenciaRecebida) {
-            setState(() { // Pra enviar a modificação do state
-              widget._transferencia.add(transferenciaRecebida);
-            });
+            if (transferenciaRecebida != null) {
+              setState(() {
+                // Pra enviar a modificação do state... usar sempre que estiver enviando dados para um stateful
+                widget._transferencia.add(transferenciaRecebida);
+              });
+            }
           });
         },
         child: Icon(Icons.add),
@@ -62,6 +69,7 @@ class ListaTransferenciaState extends State<ListaTransferencia>{
 }
 
 class FormularioTransferencia extends StatelessWidget {
+  // Caso apresente bug, Ex: perder os dados do Editor, quando alterar a rotação do aparelho. Transformar em Stateful
   final TextEditingController _controllerNumeroConta = TextEditingController();
   final TextEditingController _controllerValor = TextEditingController();
 
@@ -73,29 +81,32 @@ class FormularioTransferencia extends StatelessWidget {
       appBar: AppBar(
         title: Text('Criando Transferências'),
       ),
-      body: Column(
-        children: [
-          Editor(
-            controller: _controllerNumeroConta,
-            label: 'Número da conta',
-            tip: '0000',
-            maxLength: 4,
-            icon: Icons.account_balance,
-            color: Colors.blue,
-          ),
-          Editor(
-            controller: _controllerValor,
-            label: 'Valor',
-            tip: '0.00',
-            prefixInput: Text('R\$ '),
-            icon: Icons.monetization_on,
-            color: Colors.blue,
-          ),
-          ElevatedButton(
-            onPressed: () => _criaTransferencia(context),
-            child: Text('Confirmar'),
-          ),
-        ],
+      body: SingleChildScrollView(
+        // Permite da o comportamento de scroll a um widget
+        child: Column(
+          children: [
+            Editor(
+              controller: _controllerNumeroConta,
+              label: 'Número da conta',
+              tip: '0000',
+              maxLength: 4,
+              icon: Icons.account_balance,
+              color: Colors.blue,
+            ),
+            Editor(
+              controller: _controllerValor,
+              label: 'Valor',
+              tip: '0.00',
+              prefixInput: Text('R\$ '),
+              icon: Icons.monetization_on,
+              color: Colors.blue,
+            ),
+            ElevatedButton(
+              onPressed: () => _criaTransferencia(context),
+              child: Text('Confirmar'),
+            ),
+          ],
+        ),
       ),
     );
   }
