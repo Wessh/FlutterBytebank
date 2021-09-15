@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,12 +17,19 @@ class BytebankApp extends StatelessWidget {
   }
 }
 
-class ListaTransferencia extends StatelessWidget {
-  final List<Transferencia> _transferencia = []; //Cria uma lista vazia
-
-  /* StatelessWidget = Conteudo de forma estatica
+/* StatelessWidget = Conteudo de forma estatica
    * StatefulWidget = Tem a capacidade de modificar itens de forma dinamica
    */
+class ListaTransferencia extends StatefulWidget {
+  final List<Transferencia> _transferencia = [];//Cria uma lista vazia
+
+  @override
+  State<StatefulWidget> createState() {
+    return ListaTransferenciaState();
+  }
+}
+
+class ListaTransferenciaState extends State<ListaTransferencia>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,22 +37,22 @@ class ListaTransferencia extends StatelessWidget {
         title: Text('Transferências'),
       ),
       body: ListView.builder( //.builder permite q a lista seja dinamica
-        itemCount: _transferencia.length, // verifica quantos itens tem na lista
+        itemCount: widget._transferencia.length, // verifica quantos itens tem na lista
         itemBuilder: (context, index) { //Recebe o contexto e o indice = posição do item dentro do contexto
-          final transferencia = _transferencia[index]; //
+          final transferencia = widget._transferencia[index]; //
           return ItemTransferencia(transferencia); // Retorna o widget ItemTransferencia com transferencia referente a aquele indice
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final Future future =
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
+          final Future<dynamic> future =
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
             return FormularioTransferencia();
           })); //Usado para ir para outra página
           future.then((transferenciaRecebida) {
-            _transferencia.add(transferenciaRecebida); // Adiciona um objeto a lista _transferencia
-            debugPrint('Chegou no future.');
-            debugPrint('$transferenciaRecebida');
+            setState(() { // Pra enviar a modificação do state
+              widget._transferencia.add(transferenciaRecebida);
+            });
           });
         },
         child: Icon(Icons.add),
@@ -100,11 +106,6 @@ class FormularioTransferencia extends StatelessWidget {
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
       Navigator.pop(context, transferenciaCriada);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$transferenciaCriada'),
-        ),
-      );
     }
   }
 }
